@@ -34,14 +34,17 @@ const fetchGPS = async () => {
 const sendToLabVIEW = (data) => {
     const client = new net.Socket();
     client.connect(6000, '192.168.100.84', () => {
-        // const message = `${data.lat},${data.lng},${data.speed},${data.altitude},${data.satellites},${data.course}`;
-        const message = "Hallo";
+        const message = `${data.lat},${data.lng},${data.speed},${data.altitude},${data.satellites},${data.course}\n`;
         client.write(message);
         client.end();
     });
 
     client.on('error', (err) => {
         console.error('TCP Error:', err.message);
+    });
+
+    client.on('close', () => {
+        console.log('Koneksi TCP ditutup');
     });
 };
 
