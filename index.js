@@ -34,7 +34,8 @@ const fetchGPS = async () => {
 const sendToLabVIEW = (data) => {
     const client = new net.Socket();
     client.connect(6000, '192.168.100.84', () => {
-        const message = `${data.lat},${data.lng},${data.speed},${data.altitude},${data.satellites},${data.course}`;
+        // const message = `${data.lat},${data.lng},${data.speed},${data.altitude},${data.satellites},${data.course}`;
+        const message = "Hallo";
         client.write(message);
         client.end();
     });
