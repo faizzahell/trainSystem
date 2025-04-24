@@ -1,0 +1,17 @@
+{
+  "name": "uts-instrumentation-industry",
+  "version": "1.0.0",
+  "description": "project for uts instrumentation industry",
+  "license": "ISC",
+  "author": "faizahel joasa ariesta",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "net": "^1.0.2",
+    "node-fetch": "^3.3.2"
+  }
+}
