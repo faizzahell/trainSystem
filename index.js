@@ -9,7 +9,7 @@ const API_KEY = process.env.API_KEY;
 const PROJECT_ID = process.env.PROJECT_ID;
 const DOCUMENT_PATH = process.env.DOCUMENT_PATH;
 
-const servo = new Gpio(24, 'out');
+const led = new Gpio(24, 'out');
 
 const fetchGPS = async () => {
     const url = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/${DOCUMENT_PATH}?key=${API_KEY}`;
@@ -72,13 +72,7 @@ const server = net.createServer((socket) => {
         console.log(`Status Barrier: ${status}`);
         console.log(`Value Barrier : ${value}`);
 
-        if (status === 1) {
-            const pulseWidth = 1000 + (value / 100) * 1000;
-            servo.writeSync(pulseWidth);
-            console.log(`Servo dikendalikan ke posisi: ${pulseWidth} µs`);
-        } else {
-            console.log("Status bukan 1, servo tidak digerakkan");
-        }
+        led.writeSync(1);
     });
 
     socket.on('close', () => {
