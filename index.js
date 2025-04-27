@@ -48,13 +48,22 @@ const sendToLabVIEW = (data) => {
     });
 };
 
-setInterval(async () => {
-    const gps = await fetchGPS();
-    if (gps) {
-        console.log('GPS:', gps);
-        sendToLabVIEW(gps);
-    }
-}, 1000);
+const sendToPython = (status, value) => {
+    const client = new net.Socket();
+    client.connect(5000, '127.0.0.1', () => {
+        const message = `${status};${value}\n`;
+        client.write(message);
+        client.end();
+    });
+
+    client.on('error', (err) => {
+        console.error('TCP Error:', err.message);
+    });
+
+    client.on('close', () => {
+        console.log('Koneksi TCP ke Python ditutup');
+    });
+};
 
 const server = net.createServer((socket) => {
     console.log('LabVIEW terhubung ke server Raspberry Pi');
@@ -68,6 +77,8 @@ const server = net.createServer((socket) => {
 
         console.log(`Status Barrier: ${status}`);
         console.log(`Value Barrier : ${value}`);
+
+        sendToPython(status, value);
     });
 
     socket.on('close', () => {
@@ -82,3 +93,11 @@ const server = net.createServer((socket) => {
 server.listen(6001, () => {
     console.log('Server Raspberry Pi menunggu perintah di port 6001');
 });
+
+setInterval(async () => {
+    const gps = await fetchGPS();
+    if (gps) {
+        console.log('GPS:', gps);
+        sendToLabVIEW(gps);
+    }
+}, 1000);
