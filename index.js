@@ -55,6 +55,7 @@ const sendStatusToPort6002 = (status, value) => {
         const message = `${status};${value}\n`;
         client.write(message);
         client.end();
+        console.log(`Berhasil mengirim data: ${status} dan ${value}`)
     });
 
     client.on('error', (err) => {
