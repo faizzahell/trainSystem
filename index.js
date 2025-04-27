@@ -48,23 +48,30 @@ const sendToLabVIEW = (data) => {
     });
 };
 
-// Fungsi untuk mengirim data status dan value ke port 6002
-const sendStatusToPort6002 = (status, value) => {
-    const client = new net.Socket();
-    client.connect(6002, 'localhost', () => {
-        const message = `${status};${value}\n`;
-        client.write(message);
-        // client.end();
-        console.log(`Berhasil mengirim data: ${status} dan ${value}`)
-    });
+const sendStatusToPython = async (status, value) => {
+    const url = 'http://localhost:5000/update';
+    const payload = {
+        status: status,
+        value: value
+    };
 
-    client.on('error', (err) => {
-        console.error('TCP Error:', err.message);
-    });
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        });
 
-    client.on('close', () => {
-        console.log('Koneksi TCP ditutup ke port 6002');
-    });
+        if (res.ok) {
+            console.log('Data berhasil dikirim ke server Python!');
+        } else {
+            console.error('Gagal mengirim data ke server Python');
+        }
+    } catch (err) {
+        console.error('Terjadi error saat mengirim data ke server Python:', err.message);
+    }
 };
 
 const server = net.createServer((socket) => {
@@ -80,8 +87,7 @@ const server = net.createServer((socket) => {
         console.log(`Status Barrier: ${status}`);
         console.log(`Value Barrier : ${value}`);
 
-        // Kirim data status dan value ke port 6002
-        sendStatusToPort6002(status, value);
+        sendStatusToPython(status, value);
     });
 
     socket.on('close', () => {
