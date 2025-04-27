@@ -54,7 +54,7 @@ const sendStatusToPort6002 = (status, value) => {
     client.connect(6002, 'localhost', () => {
         const message = `${status};${value}\n`;
         client.write(message);
-        client.end();
+        // client.end();
         console.log(`Berhasil mengirim data: ${status} dan ${value}`)
     });
 
