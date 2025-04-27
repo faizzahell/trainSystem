@@ -1,16 +1,12 @@
 import fetch from 'node-fetch';
 import net from 'net';
 import dotenv from 'dotenv';
-import { Gpio } from 'pigpio';
 
 dotenv.config();
 
 const API_KEY = process.env.API_KEY;
 const PROJECT_ID = process.env.PROJECT_ID;
 const DOCUMENT_PATH = process.env.DOCUMENT_PATH;
-
-const led = new Gpio(17, { mode: Gpio.OUTPUT });
-const servo = new Gpio(18, { mode: Gpio.OUTPUT });
 
 const fetchGPS = async () => {
     const url = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/${DOCUMENT_PATH}?key=${API_KEY}`;
@@ -72,14 +68,6 @@ const server = net.createServer((socket) => {
 
         console.log(`Status Barrier: ${status}`);
         console.log(`Value Barrier : ${value}`);
-
-        if (status === 1) {
-            led.digitalWrite(1);
-            servo.servoWrite(value);
-        } else {
-            led.digitalWrite(0);
-            servo.servoWrite(0);
-        }
     });
 
     socket.on('close', () => {
