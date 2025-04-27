@@ -51,7 +51,7 @@ const sendToLabVIEW = (data) => {
 // Fungsi untuk mengirim data status dan value ke port 6002
 const sendStatusToPort6002 = (status, value) => {
     const client = new net.Socket();
-    client.connect(6002, '192.168.100.84', () => {
+    client.connect(6002, 'localhost', () => {
         const message = `${status};${value}\n`;
         client.write(message);
         client.end();
