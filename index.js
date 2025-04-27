@@ -48,6 +48,24 @@ const sendToLabVIEW = (data) => {
     });
 };
 
+// Fungsi untuk mengirim data status dan value ke port 6002
+const sendStatusToPort6002 = (status, value) => {
+    const client = new net.Socket();
+    client.connect(6002, '192.168.100.84', () => {
+        const message = `${status};${value}\n`;
+        client.write(message);
+        client.end();
+    });
+
+    client.on('error', (err) => {
+        console.error('TCP Error:', err.message);
+    });
+
+    client.on('close', () => {
+        console.log('Koneksi TCP ditutup ke port 6002');
+    });
+};
+
 const server = net.createServer((socket) => {
     console.log('LabVIEW terhubung ke server Raspberry Pi');
 
@@ -60,6 +78,9 @@ const server = net.createServer((socket) => {
 
         console.log(`Status Barrier: ${status}`);
         console.log(`Value Barrier : ${value}`);
+
+        // Kirim data status dan value ke port 6002
+        sendStatusToPort6002(status, value);
     });
 
     socket.on('close', () => {
